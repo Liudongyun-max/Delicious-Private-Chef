@@ -1,15 +1,18 @@
-import { Injectable, signal } from '@angular/core';
-import { RecipeRecord } from '../models';
+import { Injectable, signal, effect } from '@angular/core';
+import { MenuItem } from '../models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FavoriteService {
-  private readonly STORAGE_KEY = 'recipe_app_favorites';
-  favorites = signal<RecipeRecord[]>([]);
+  private readonly STORAGE_KEY = 'recipe_app_favorites_v2';
+  favorites = signal<MenuItem[]>([]);
 
   constructor() {
     this.loadFavorites();
+    effect(() => {
+      this.saveToStorage(this.favorites());
+    });
   }
 
   private loadFavorites() {
@@ -23,17 +26,14 @@ export class FavoriteService {
     }
   }
 
-  toggleFavorite(record: RecipeRecord) {
+  toggleFavorite(record: MenuItem) {
     this.favorites.update(prev => {
       const exists = prev.some(r => r.id === record.id);
-      let newFavorites;
       if (exists) {
-        newFavorites = prev.filter(r => r.id !== record.id);
+        return prev.filter(r => r.id !== record.id);
       } else {
-        newFavorites = [record, ...prev];
+        return [record, ...prev];
       }
-      this.saveToStorage(newFavorites);
-      return newFavorites;
     });
   }
 
@@ -41,7 +41,7 @@ export class FavoriteService {
     return this.favorites().some(r => r.id === id);
   }
 
-  private saveToStorage(records: RecipeRecord[]) {
+  private saveToStorage(records: MenuItem[]) {
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(records));
     } catch (e) {

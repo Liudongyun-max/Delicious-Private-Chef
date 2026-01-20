@@ -1,46 +1,63 @@
+// For the Home page menu generation
+export interface MenuItem {
+  id: string;
+  title: string;
+  tags: string[];
+  time_min: number;
+  difficulty: '简单' | '中等' | '困难';
+  servings: number;
+  image_prompt: string;
+  imageUrl?: string; // To be populated by the client after image generation
+}
+
+export interface GeneratedMenu {
+  menu_title: string;
+  generated_at: string;
+  items: MenuItem[];
+}
+
+// For the Recipe Detail page
 export interface Ingredient {
   name: string;
   amount: string;
-  optional: boolean;
+  note?: string;
   substitute?: string;
 }
 
-export interface Step {
+export interface RecipeStep {
   step: number;
-  text: string;
-  timeMinutes: number;
-  heatLevel: string;
-  tips: string;
-}
-
-export interface TimeInfo {
-  prepMinutes: number;
-  cookMinutes: number;
-  totalMinutes: number;
+  title: string;
+  instruction: string;
+  duration_min: number;
+  heat: string;
+  tip: string;
 }
 
 export interface Nutrition {
-  calories: number;
-  protein: string;
-  carbs: string;
-  fat: string;
+  kcal: number;
+  protein_g: number;
+  fat_g: number;
+  carb_g: number;
 }
 
 export interface Recipe {
+  id: string;
   title: string;
-  description: string;
+  summary: string;
+  tags: string[];
+  time_min: number;
+  difficulty: '简单' | '中等' | '困难';
   servings: number;
-  difficulty: string;
-  time: TimeInfo;
+  cover_image_prompt: string;
   ingredients: Ingredient[];
-  steps: Step[];
-  tips: string[];
-  nutrition?: Nutrition;
+  steps: RecipeStep[];
+  chef_tips: string[];
+  nutrition: Nutrition;
 }
 
+// For local storage and state management
 export interface RecipeRecord {
-  id: string;
-  timestamp: number;
-  recipe: Recipe;
+  menuItem: MenuItem;
+  fullRecipe?: Recipe;
   imageUrl?: string;
 }
