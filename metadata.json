@@ -1,0 +1,5 @@
+{
+  "name": "美味私厨",
+  "description": "An AI-powered cooking assistant that generates detailed recipes and food images based on dish names.",
+  "requestFramePermissions": []
+}
